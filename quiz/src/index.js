@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import "./assets/style.css"
 import  quizService from './quizService';
 import QuestionBox from './components/QuestionBox';
+import Result from './components/Result';
 
 class Quiz extends Component {
     state = {
@@ -30,6 +31,13 @@ class Quiz extends Component {
             attempted : this.state.attempted < 5 ? this.state.attempted + 1 : 5
         });
     };
+    playAgain = () => {
+        this.getQuestions();
+        this.setState({
+            score: 0,
+            attempted : 0
+        });
+    };
     render() {
         return (
             <div className="container">
@@ -40,15 +48,18 @@ class Quiz extends Component {
                     this.state.attempted < 5 &&
                     this.state.questionBank.map(
                         ({question, answers, correct, questionId}) => 
-                            <QuestionBox
+                            (<QuestionBox
                                 question={question}
                                 options={answers}
                                 key={questionId}
                                 selected={answer => {this.computeAnswer(answer, correct)}}
-                            />
+                            />)
                         
                     )}
-                    {this.state.attempted === 5 ? <h2>{this.state.score}</h2> : null }
+                    {this.state.attempted === 5 ? (
+                    <Result score={this.state.score} playAgain={this.playAgain} />
+                    // <h2>{this.state.score}</h2>
+                      )  : null }
             </div>
         );
     }
